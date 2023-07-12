@@ -1,10 +1,7 @@
 import Notiflix from 'notiflix';
-
-import SlimSelect from 'slim-select';
-new SlimSelect({
-  select: '#single',
-});
-
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+import { UnsplashApi } from './pixab-api';
 
 const refs = {
   gallery: document.querySelector('.gallery'),
@@ -12,57 +9,55 @@ const refs = {
   loadMoreBtn: document.querySelector('.load-more'),
 };
 
-import { UnsplashApi } from './pixab-api';
-
 const unsplashApi = new UnsplashApi();
 let currentPage = 1;
 
 function createImageGallery(images) {
-  return images.map(image => createImageCard(image)).join('');
+  return images.map((image) => createImageCard(image)).join('');
 }
 
 function createImageCard(image) {
   return `
-    <div class="photo-card">
-      <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy">
-      <div class="info">
-        <p class="info-item"><b>Likes:</b> ${image.likes}</p>
-        <p class="info-item"><b>Views:</b> ${image.views}</p>
-        <p class="info-item"><b>Comments:</b> ${image.comments}</p>
-        <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
+    <a href="${image.largeImageURL}">
+      <div class="photo-card">
+        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy">
+        <div class="info">
+          <p class="info-item"><b>Likes:</b> ${image.likes}</p>
+          <p class="info-item"><b>Views:</b> ${image.views}</p>
+          <p class="info-item"><b>Comments:</b> ${image.comments}</p>
+          <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
+        </div>
       </div>
-    </div>
+    </a>
   `;
 }
 
 function appendGalleryMarkup(markup) {
   refs.gallery.insertAdjacentHTML('beforeend', markup);
+  lightbox.refresh();
 }
 
 function clearGallery() {
   refs.gallery.innerHTML = '';
 }
 
-
-
-function handleLoadMoreBtnClick() {
+async function handleLoadMoreBtnClick() {
   currentPage++;
   unsplashApi.page = currentPage;
 
-  unsplashApi.fetchPhotos()
-    .then(data => {
-      const galleryMarkup = createImageGallery(data.hits);
-      appendGalleryMarkup(galleryMarkup);
-      if (data.totalHits <= currentPage * unsplashApi.perPage) {
-        hideLoadMoreBtn();
-      }
-    })
-    .catch(error => {
-      console.log(error);
-    });
+  try {
+    const data = await unsplashApi.fetchPhotos();
+    const galleryMarkup = createImageGallery(data.hits);
+    appendGalleryMarkup(galleryMarkup);
+    if (data.totalHits <= currentPage * unsplashApi.perPage) {
+      hideLoadMoreBtn();
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-function handleFormSubmit(event) {
+async function handleFormSubmit(event) {
   event.preventDefault();
   const searchQuery = event.target.elements.searchQuery.value.trim();
   unsplashApi.searchQuery = searchQuery;
@@ -74,19 +69,18 @@ function handleFormSubmit(event) {
 
   clearGallery();
 
-  unsplashApi.fetchPhotos()
-    .then(data => {
-      const galleryMarkup = createImageGallery(data.hits);
-      appendGalleryMarkup(galleryMarkup);
-      if (data.totalHits > unsplashApi.perPage) {
-        showLoadMoreBtn();
-      } else {
-        hideLoadMoreBtn();
-      }
-    })
-    .catch(error => {
-      Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-    });
+  try {
+    const data = await unsplashApi.fetchPhotos();
+    const galleryMarkup = createImageGallery(data.hits);
+    appendGalleryMarkup(galleryMarkup);
+    if (data.totalHits > unsplashApi.perPage) {
+      showLoadMoreBtn();
+    } else {
+      hideLoadMoreBtn();
+    }
+  } catch (error) {
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+  }
 }
 
 function showLoadMoreBtn() {
@@ -96,6 +90,11 @@ function showLoadMoreBtn() {
 function hideLoadMoreBtn() {
   refs.loadMoreBtn.classList.add('is-hidden');
 }
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionsDelay: 250,
+});
 
 refs.searchForm.addEventListener('submit', handleFormSubmit);
 refs.loadMoreBtn.addEventListener('click', handleLoadMoreBtnClick);
+

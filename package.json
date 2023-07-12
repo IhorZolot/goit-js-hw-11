@@ -22,6 +22,7 @@
     "modern-normalize": "^1.1.0",
     "notiflix": "^3.2.6",
     "parcel-transformer-hbs": "^1.0.4",
+    "simplelightbox": "^2.14.1",
     "slim-select": "^2.6.0"
   },
   "devDependencies": {
@@ -30,11 +31,6 @@
     "parcel": "^2.6.0",
     "parcel-reporter-clean-dist": "^1.0.4",
     "posthtml-include": "^1.7.4"
-  },
-  "transformers": {
-    "*.hbs": [
-      "parcel-transformer-hbs"
-    ]
   },
   "browserslist": "> 0.5%, last 2 versions, not dead"
 }
