@@ -7,7 +7,7 @@ export class UnsplashApi {
 constructor() {
 this.searchQuery = '';
 this.page = 1;
-this.perPage = 12;
+this.perPage = 40;
 }
 
 fetchPhotos() {

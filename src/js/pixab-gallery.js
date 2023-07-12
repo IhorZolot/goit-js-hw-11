@@ -76,7 +76,7 @@ async function handleFormSubmit(event) {
     const data = await unsplashApi.fetchPhotos();
     const galleryMarkup = createImageGallery(data.hits);
     appendGalleryMarkup(galleryMarkup);
-    if (data.totalHits > unsplashApi.perPage) {
+    if ((data.totalHits / unsplashApi.perPage) > unsplashApi.page) {
       showLoadMoreBtn();
     } else {
       hideLoadMoreBtn();
