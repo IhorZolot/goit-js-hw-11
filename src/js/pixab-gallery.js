@@ -18,17 +18,20 @@ function createImageGallery(images) {
 
 function createImageCard(image) {
   return `
-    <a href="${image.largeImageURL}">
-      <div class="photo-card">
-        <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy">
-        <div class="info">
-          <p class="info-item"><b>Likes:</b> ${image.likes}</p>
-          <p class="info-item"><b>Views:</b> ${image.views}</p>
-          <p class="info-item"><b>Comments:</b> ${image.comments}</p>
-          <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
-        </div>
-      </div>
+  <div class="photo-card">
+   <a class="img-link" href="${image.largeImageURL}">
+   <div class="img-box"> 
+   <img src="${image.webformatURL}" alt="${image.tags}" loading="lazy">
+   </div>
+     
+     <div class="info">
+      <p class="info-item"><b>Likes:</b> ${image.likes}</p>
+      <p class="info-item"><b>Views:</b> ${image.views}</p>
+      <p class="info-item"><b>Comments:</b> ${image.comments}</p>
+      <p class="info-item"><b>Downloads:</b> ${image.downloads}</p>
+     </div>
     </a>
+  </div>
   `;
 }
 
@@ -91,7 +94,6 @@ function hideLoadMoreBtn() {
   refs.loadMoreBtn.classList.add('is-hidden');
 }
 const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
   captionsDelay: 250,
 });
 

@@ -37,16 +37,29 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
+  
 }
 
 .photo-card {
-  border: 1px solid #ccc;
-  padding: 10px;
+  border: 1px solid #e7e9fc;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+  border-top: none;
+
 }
 
 .photo-card img {
-  width: 100%;
-  height: auto;
+  height:100%;
+  object-fit:cover; 
+  border-radius: 4px 4px 4px 4px;
+  box-shadow: 0px 1px 6px rgba(46, 47, 66, 0.08), 0px 1px 1px rgba(46, 47, 66, 0.16),
+    0px 2px 1px rgba(46, 47, 66, 0.08);
+  
+}
+.img-box {
+  width: 300px;
+  height: 200px;
+  overflow: hidden;
 }
 
 .info {
@@ -55,11 +68,17 @@ body {
   /* flex-wrap: wrap; */
   text-align: center;
   font-size: 14px;
+
  
+}
+.img-link {
+  text-decoration: none;
 }
 
 .info-item {
   margin: 5px 0;
+  text-decoration: none;
+  color: black;
 }
 
 .load-more {
