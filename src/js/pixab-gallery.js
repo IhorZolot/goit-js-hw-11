@@ -85,6 +85,8 @@ async function handleFormSubmit(event) {
       hideLoadMoreBtn();
       if (totalHits === 0) {
         Notiflix.Notify.failure('No results found.');
+      } else {
+        Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
       }
     }
   } catch (error) {
