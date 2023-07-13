@@ -16,6 +16,9 @@ q: this.searchQuery,
 per_page: this.perPage,
 page: this.page,
 key: this.#API_KEY,
+image_type: 'photo',
+orientation: 'horizontal',
+safesearch: true,
 };
 
 return axios.get(`${this.#BASE_URL}/`, { params })
