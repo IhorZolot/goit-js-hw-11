@@ -11,6 +11,7 @@ const refs = {
 
 const unsplashApi = new UnsplashApi();
 let currentPage = 1;
+let totalHits = 0;
 
 function createImageGallery(images) {
   return images.map((image) => createImageCard(image)).join('');
@@ -52,8 +53,9 @@ async function handleLoadMoreBtnClick() {
     const data = await unsplashApi.fetchPhotos();
     const galleryMarkup = createImageGallery(data.hits);
     appendGalleryMarkup(galleryMarkup);
-    if (data.totalHits <= currentPage * unsplashApi.perPage) {
+    if (totalHits <= currentPage * unsplashApi.perPage) {
       hideLoadMoreBtn();
+      Notiflix.Notify.info("We're sorry, but you've reached the end of search results.");
     }
   } catch (error) {
     console.log(error);
@@ -74,15 +76,19 @@ async function handleFormSubmit(event) {
 
   try {
     const data = await unsplashApi.fetchPhotos();
+    totalHits = data.totalHits;
     const galleryMarkup = createImageGallery(data.hits);
     appendGalleryMarkup(galleryMarkup);
-    if ((data.totalHits / unsplashApi.perPage) > unsplashApi.page) {
+    if (data.totalHits / unsplashApi.perPage > unsplashApi.page) {
       showLoadMoreBtn();
     } else {
       hideLoadMoreBtn();
+      if (totalHits === 0) {
+        Notiflix.Notify.failure('No results found.');
+      }
     }
   } catch (error) {
-    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+    Notiflix.Notify.failure("Oops! Something went wrong. Please try again later.");
   }
 }
 
@@ -93,10 +99,10 @@ function showLoadMoreBtn() {
 function hideLoadMoreBtn() {
   refs.loadMoreBtn.classList.add('is-hidden');
 }
+
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsDelay: 250,
 });
 
 refs.searchForm.addEventListener('submit', handleFormSubmit);
 refs.loadMoreBtn.addEventListener('click', handleLoadMoreBtnClick);
-
